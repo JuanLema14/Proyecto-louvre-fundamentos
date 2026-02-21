@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Conceptual – Vulnerabilidades del Louvre</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; min-height:100vh; }
+
+body {
+font-family: ‘Montserrat’, sans-serif;
+background:
+linear-gradient(180deg,
+rgba(10,40,80,0.78) 0%,
+rgba(5,25,55,0.82) 50%,
+rgba(3,12,35,0.9) 100%),
+linear-gradient(120deg, #1b4580 0%, #0d2750 40%, #050f25 100%);
+min-height: 100vh;
+padding: 30px 20px 60px;
+position: relative;
+overflow-x: hidden;
+}
+
+/* Pirámide decorativa */
+.pyramid-deco {
+position: fixed;
+left: 50%; top: 50%;
+transform: translate(-50%, -45%);
+opacity: 0.1;
+pointer-events: none;
+z-index: 0;
+}
+
+/* Grid principal */
+.map {
+position: relative;
+z-index: 1;
+max-width: 1280px;
+margin: 0 auto;
+}
+
+/* ——— NODO CENTRAL ——— */
+.center-wrap {
+display: flex;
+justify-content: center;
+margin-bottom: 0;
+}
+
+.center-node {
+background: rgba(5, 20, 50, 0.85);
+border: 2.5px solid rgba(70,210,220,0.85);
+border-radius: 14px;
+padding: 16px 28px;
+text-align: center;
+color: white;
+font-size: 0.9rem;
+font-weight: 600;
+line-height: 1.55;
+box-shadow: 0 0 30px rgba(70,210,220,0.2), 0 4px 20px rgba(0,0,0,0.6);
+max-width: 400px;
+backdrop-filter: blur(8px);
+position: relative;
+z-index: 10;
+}
+
+/* ——— SVG CONECTORES ——— */
+#connSvg {
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+pointer-events: none;
+z-index: 2;
+overflow: visible;
+}
+
+/* ——— RAMAS ——— */
+.branches {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 16px;
+margin-top: 70px;
+position: relative;
+z-index: 5;
+}
+
+.branch {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 10px;
+min-width: 0;
+}
+
+/* Causa principal */
+.main-node {
+background: rgba(0, 105, 115, 0.88);
+border: 2px solid rgba(70,210,220,0.85);
+border-radius: 10px;
+padding: 12px 14px;
+text-align: center;
+color: white;
+font-size: 0.68rem;
+font-weight: 700;
+line-height: 1.45;
+box-shadow: 0 0 18px rgba(0,180,200,0.3), 0 3px 14px rgba(0,0,0,0.5);
+backdrop-filter: blur(5px);
+width: 100%;
+text-transform: uppercase;
+letter-spacing: 0.04em;
+min-height: 50px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Conector vertical recto */
+.branch-vert {
+width: 2px;
+height: 14px;
+background: rgba(70,210,220,0.55);
+flex-shrink: 0;
+}
+
+/* Causas secundarias */
+.sec-row {
+display: flex;
+gap: 8px;
+width: 100%;
+justify-content: center;
+}
+
+.sec-node {
+background: rgba(0, 85, 95, 0.78);
+border: 1.5px solid rgba(60,195,210,0.5);
+border-radius: 8px;
+padding: 9px 10px;
+color: rgba(255,255,255,0.9);
+font-size: 0.59rem;
+line-height: 1.55;
+backdrop-filter: blur(3px);
+flex: 1;
+min-width: 80px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+}
+
+.sec-node strong {
+display: block;
+font-weight: 700;
+color: #6ae8ee;
+margin-bottom: 4px;
+font-size: 0.62rem;
+text-transform: uppercase;
+letter-spacing: 0.04em;
+}
+
+/* ——— PORTADA ——— */
+.cover {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+text-align: center;
+padding: 40px 30px;
+position: relative;
+z-index: 10;
+}
+
+.cover-logo {
+font-size: 3rem;
+margin-bottom: 18px;
+filter: drop-shadow(0 0 18px rgba(70,210,220,0.5));
+}
+
+.cover-univ {
+font-size: 0.7rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.25em;
+color: #6ae8ee;
+margin-bottom: 10px;
+}
+
+.cover-divider {
+width: 80px;
+height: 2px;
+background: linear-gradient(to right, transparent, rgba(70,210,220,0.8), transparent);
+margin: 14px auto;
+}
+
+.cover-course {
+font-size: 0.78rem;
+color: rgba(255,255,255,0.55);
+letter-spacing: 0.12em;
+text-transform: uppercase;
+margin-bottom: 6px;
+}
+
+.cover-title {
+font-size: clamp(1.3rem, 3vw, 2rem);
+font-weight: 700;
+color: white;
+line-height: 1.35;
+max-width: 600px;
+margin: 0 auto 6px;
+text-shadow: 0 0 40px rgba(70,210,220,0.25);
+}
+
+.cover-year {
+font-size: 0.85rem;
+color: #6ae8ee;
+font-weight: 600;
+letter-spacing: 0.1em;
+margin-bottom: 40px;
+}
+
+.cover-integrantes-box {
+background: rgba(0, 85, 100, 0.45);
+border: 1.5px solid rgba(70,210,220,0.45);
+border-radius: 12px;
+padding: 20px 36px;
+backdrop-filter: blur(8px);
+box-shadow: 0 0 30px rgba(0,180,200,0.15);
+}
+
+.cover-integrantes-label {
+font-size: 0.62rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.2em;
+color: #6ae8ee;
+margin-bottom: 14px;
+}
+
+.cover-name {
+color: white;
+font-size: 0.88rem;
+font-weight: 600;
+line-height: 1.9;
+letter-spacing: 0.04em;
+}
+
+.cover-scroll {
+margin-top: 40px;
+font-size: 0.65rem;
+color: rgba(255,255,255,0.3);
+text-transform: uppercase;
+letter-spacing: 0.15em;
+animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+0%,100% { opacity:0.3; } 50% { opacity:0.8; }
+}
+
+/* Separador de sección */
+.section-sep {
+height: 2px;
+background: linear-gradient(to right, transparent, rgba(70,210,220,0.4), transparent);
+margin: 0 0 30px;
+}
+
+@media(max-width:900px) {
+.branches { flex-direction:column; align-items:center; }
+.branch { width:100%; max-width:500px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Pirámide decorativa SVG -->
+
+<svg class="pyramid-deco" width="700" height="600" viewBox="0 0 700 600">
+  <polygon points="350,20 660,580 40,580" fill="rgba(80,180,220,0.06)" stroke="rgba(100,220,255,1)" stroke-width="2.5"/>
+  <line x1="350" y1="20" x2="350" y2="580" stroke="rgba(100,220,255,0.3)" stroke-width="1"/>
+  <line x1="40" y1="580" x2="660" y2="580" stroke="rgba(100,220,255,0.3)" stroke-width="1"/>
+  <!-- Reflejo -->
+  <polygon points="350,590 660,30 40,30" fill="none" stroke="rgba(100,220,255,0.25)" stroke-width="1.5" transform="translate(0,595) scale(1,-1)"/>
+</svg>
+
+<!-- ===== PORTADA ===== -->
+
+<div class="cover">
+  <div class="cover-univ">Universidad de Antioquia · UdeA</div>
+  <div class="cover-divider"></div>
+  <div class="cover-course">Trabajo para el curso de</div>
+  <div class="cover-title">Fundamentos de Sistemas de Información</div>
+  <div class="cover-year">2026-1</div>
+  <div class="cover-integrantes-box">
+    <div class="cover-integrantes-label">Integrantes</div>
+    <div class="cover-name">Juan Andrés Lema</div>
+    <div class="cover-name">Miguel Ángel Marín Otalvaro</div>
+  </div>
+  <div class="cover-scroll">▼ &nbsp; Mapa conceptual</div>
+</div>
+
+<div class="section-sep"></div>
+
+<div class="map" id="map">
+  <svg id="connSvg"></svg>
+
+  <!-- NODO CENTRAL -->
+
+  <div class="center-wrap">
+    <div class="center-node" id="centerNode">
+      ¿Qué vulnerabilidades existen en los sistemas de seguridad del Museo del Louvre y cómo pueden mitigarse?
+    </div>
+  </div>
+
+  <!-- RAMAS -->
+
+  <div class="branches" id="branches">
+
+```
+<!-- RAMA 1 -->
+<div class="branch" id="b1">
+  <div class="main-node" id="m1">Obsolescencia<br>Tecnológica</div>
+  <div class="branch-vert"></div>
+  <div class="sec-row">
+    <div class="sec-node">
+      <strong>Sistemas anticuados</strong>
+      Hardware y software con más de dos décadas (modelos 2003) incompatibles con analítica de video moderna.
+    </div>
+    <div class="sec-node">
+      <strong>Brechas de ciberseguridad</strong>
+      Contraseñas débiles en servidores centrales de seguridad que facilitan el sabotaje y acceso digital remoto.
+    </div>
+    <div class="sec-node">
+      <strong>Puntos ciegos en el perímetro</strong>
+      Sensores y cámaras con ángulos que dan al Sena, permitiendo el uso de plataformas elevadoras sin detección temprana.
+    </div>
+  </div>
+</div>
+
+<!-- RAMA 2 -->
+<div class="branch" id="b2">
+  <div class="main-node" id="m2">Deficiencias en la Gestión<br>de Recursos Humanos</div>
+  <div class="branch-vert"></div>
+  <div class="sec-row">
+    <div class="sec-node">
+      <strong>Déficit de personal</strong>
+      Reducción de puestos de guarda en control clave para priorizar el flujo de turistas en las entradas principales.
+    </div>
+    <div class="sec-node">
+      <strong>Posible colusión interna</strong>
+      Acceso de delincuentes a información técnica detallada sobre qué ventanas no activarían alarmas inmediatas.
+    </div>
+    <div class="sec-node">
+      <strong>Fallas en el protocolo de respuesta</strong>
+      Falta de entrenamiento generó confusión sobre la ubicación exacta del robo durante los minutos críticos.
+    </div>
+  </div>
+</div>
+
+<!-- RAMA 3 -->
+<div class="branch" id="b3">
+  <div class="main-node" id="m3">Vulnerabilidad Estructural<br>del Edificio</div>
+  <div class="branch-vert"></div>
+  <div class="sec-row">
+    <div class="sec-node">
+      <strong>Accesos físicos débiles</strong>
+      Ventanales históricos de gran tamaño sin refuerzos de grado balístico ni sensores de rotura de cristal de última generación.
+    </div>
+    <div class="sec-node">
+      <strong>Retraso en ejecución de mejoras</strong>
+      No se implementaron recomendaciones de seguridad física sugeridas por expertos externos por falta de presupuesto o burocracia.
+    </div>
+  </div>
+</div>
+```
+
+  </div><!-- fin branches -->
+
+</div><!-- fin map -->
+
+<script>
+function draw() {
+  const svg = document.getElementById('connSvg');
+  const map = document.getElementById('map');
+  const mRect = map.getBoundingClientRect();
+
+  svg.style.width  = map.scrollWidth  + 'px';
+  svg.style.height = map.scrollHeight + 'px';
+  svg.innerHTML = '';
+
+  function ns(tag, attrs) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    return el;
+  }
+
+  const cEl = document.getElementById('centerNode');
+  const cR  = cEl.getBoundingClientRect();
+  const cx  = cR.left - mRect.left + cR.width / 2;
+  const cy  = cR.top  - mRect.top  + cR.height;
+
+  ['m1','m2','m3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const r  = el.getBoundingClientRect();
+    const tx = r.left - mRect.left + r.width / 2;
+    const ty = r.top  - mRect.top;
+
+    const ctrl1y = cy + 35;
+    const ctrl2y = ty - 35;
+
+    svg.appendChild(ns('path', {
+      d: `M ${cx} ${cy} C ${cx} ${ctrl1y}, ${tx} ${ctrl2y}, ${tx} ${ty}`,
+      stroke: 'rgba(70,210,220,0.6)',
+      'stroke-width': '2',
+      fill: 'none',
+      'stroke-dasharray': '6,4'
+    }));
+
+    [{ x:cx, y:cy }, { x:tx, y:ty }].forEach(p =>
+      svg.appendChild(ns('circle', { cx:p.x, cy:p.y, r:'4', fill:'rgba(70,210,220,0.8)' }))
+    );
+  });
+}
+
+window.addEventListener('load',   () => setTimeout(draw, 120));
+window.addEventListener('resize', () => setTimeout(draw, 80));
+</script>
+
+</body>
+</html>
